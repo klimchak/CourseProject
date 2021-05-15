@@ -1,7 +1,49 @@
-﻿#include <cstdlib>
-#include <iostream>
+﻿#include <Windows.h>
+#include <string> //   для строк
+#include <iostream> // файловый 
+#include <iostream> // файловый 
+#include <fstream> //  файловый 
+#include <cstdlib> //  для использования функции exit()
 
 using namespace std;
+using std::string;
+
+int getValueInt()
+{
+    while (true) // цикл продолжается до тех пор, пока пользователь не введет корректное значение
+    {
+        
+        int a;
+        std::cin >> a;
+
+        if (std::cin.fail()) // если предыдущее извлечение оказалось неудачным,
+        {
+            std::cin.clear(); // то возвращаем cin в 'обычный' режим работы
+            std::cin.ignore(32767, '\n'); // и удаляем значения предыдущего ввода из входного буфера
+        }
+        else // если всё хорошо, то возвращаем a
+            return a;
+    }
+}
+
+string getValueStr()
+{
+    while (true) // цикл продолжается до тех пор, пока пользователь не введет корректное значение
+    {
+        
+        string a;
+        std::cin >> a;
+
+        if (std::cin.fail()) // если предыдущее извлечение оказалось неудачным,
+        {
+            std::cin.clear(); // то возвращаем cin в 'обычный' режим работы
+            std::cin.ignore(32767, '\n'); // и удаляем значения предыдущего ввода из входного буфера
+        }
+        else // если всё хорошо, то возвращаем a
+            return a;
+    }
+}
+
 
 int GetInput()
 {
@@ -12,6 +54,7 @@ int GetInput()
 
 void DisplayMainMenu()
 {
+    //cout << "\033[2J\033[1;1H";
     cout << "Окно входа\n";
     cout << "Пожалуйста укажите пункт\n";
     cout << "1 - Администратор\n";
@@ -375,14 +418,58 @@ void GetChoiceMenuUser()
 /// </summary>
 
 void GetLogiAndPass()
-{
-    string choiceLogin;
-    string choicePass;
-    cout << "Введите логин";
-    choiceLogin = GetInput();
-    cout << "Введите пароль";
-    choicePass = GetInput();
-
+{   
+    bool ok = false;
+    string fileLogin;
+    string filePass;
+    int profile = 0;
+    int i = 1;
+    while (ok == false)
+    {
+        if (i == 1)
+        {
+            cout << "\033[2J\033[1;1H";
+            cout << "Введите логин:\n";
+            string choiceLogin = getValueStr();
+            string interimLogin = choiceLogin + ".txt";
+            ifstream fin(interimLogin, ios_base::in);
+            if (!fin.is_open()) // если файл не открыт
+            {
+                cout << "Пользователь с таким логином не найден!\n";
+            } 
+            else
+            {
+                string line;
+                int j = 1;
+                while (getline(fin, line))
+                {
+                    if (j == 1) { fileLogin = line; }
+                    if (j == 2) { filePass = line; }
+                    if (j == 3) { profile = stoi(line); }
+                    j++;
+                }
+                fin.close();
+                i = 2;
+            }
+        }
+        if (i == 2)
+        {
+            cout << "\033[2J\033[1;1H";
+            cout << "Введите пароль:\n";
+            string choicePass = getValueStr();
+            if (choicePass == filePass)
+            {
+                ok = true;
+            }
+            else
+            {
+                cout << "Ошибка пароля. Повторите ввод.\n"; // сообщить об этом
+            }
+        }
+    }
+    if (profile == 1) { GetChoiceMenuAdmin(); }
+    if (profile == 2) { GetChoiceMenuManager(); }
+    if (profile == 3) { GetChoiceMenuUser(); } 
 }
 
 
@@ -390,32 +477,11 @@ void GetLogiAndPass()
 /// функция первого уровня
 /// </summary>
 
+
+
 int main(int argc, char* argv[])
 {
-    int choice = 0;
-
-    do
-    {
-        system("cls");
-        DisplayMainMenu();
-        choice = GetInput();
-        switch (choice) {
-        case 1:
-            GetChoiceMenuAdmin();
-            break;
-        case 2:
-            DisplayMenuManager();
-            break;
-        case 3:
-            GetChoiceMenuUser();
-            break;
-        case 4:
-            cout << "Выход!";
-            break;
-        default:
-            break;
-        }
-    } while (choice != 3);
-    system("PAUSE");
-    return EXIT_SUCCESS;
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+    GetLogiAndPass();
 }
