@@ -8,11 +8,64 @@
 using namespace std;
 using std::string;
 
-int getValueInt()
+
+
+/*
+============================================
+            объекты программы
+============================================
+*/
+
+class Profile
+{
+    public:
+        string name;
+        string pass;
+        int level;
+        Profile(string nameCls, string passCls, int levelCls)
+        {
+            name = nameCls; 
+            pass = passCls; 
+            level = levelCls;
+        }
+};
+
+/*
+============================================
+            объявление функций
+============================================
+*/
+// проверка на наличие файла данных
+bool SearchFD();
+// создание и затирание файла данных
+bool CreateOrDeleteFD(bool rewrote, bool createOrDelete);
+// запись данных в файла профиля
+string WorkProfileFD(Profile user, bool rePass, bool del);
+// смена пароля имеющемуся пользователю
+Profile setNewPass();
+// сбор данных для пользователя
+Profile GetNewProfileData();
+// Функции выбора в меню
+void GetChoiceMenuAdmin();
+void GetChoiceWorkAtFileData();
+void GetChoiceWorkAtRecords();
+void GetChoiceWorkAtProfile();
+void GetChoiceMenuManager();
+void GetChoiceMenuUser();
+
+
+
+/*
+============================================
+   функции получения значения с клавиатуры
+============================================
+*/
+
+int getValueInt(string mess)
 {
     while (true) // цикл продолжается до тех пор, пока пользователь не введет корректное значение
     {
-        
+        cout << mess + "\n";
         int a;
         std::cin >> a;
 
@@ -26,11 +79,11 @@ int getValueInt()
     }
 }
 
-string getValueStr()
+string getValueStr(string mess)
 {
     while (true) // цикл продолжается до тех пор, пока пользователь не введет корректное значение
     {
-        
+        cout << mess + "\n";
         string a;
         std::cin >> a;
 
@@ -45,16 +98,14 @@ string getValueStr()
 }
 
 
-int GetInput()
-{
-    int choice;
-    cin >> choice;
-    return choice;
-}
+/*
+============================================
+            функции принта меню                     !!! переписать
+============================================
+*/
 
 void DisplayMainMenu()
 {
-    //cout << "\033[2J\033[1;1H";
     cout << "Окно входа\n";
     cout << "Пожалуйста укажите пункт\n";
     cout << "1 - Администратор\n";
@@ -71,9 +122,8 @@ void DisplayMenuAdmin()
     cout << "1 - Работа с файлами данных\n";
     cout << "2 - Работа с записями в файле данных\n";
     cout << "3 - Просмотр всех записей в таблице\n";
-    cout << "4 - Работа с менеджерами\n";
-    cout << "5 - Работа с пользователями\n";
-    cout << "6 - Выход\n";
+    cout << "4 - Работа с учетными записями\n";
+    cout << "5 - Выход\n";
     cout << "Ваш выбор: ";
 }
 
@@ -106,29 +156,16 @@ void DisplayWorkAtRecords()
     cout << "Ваш выбор: ";
 }
 
-void DisplayWorkAtManagerProfile()
+void DisplayWorkAtProfile()
 {
-    cout << "Меню работы с менеджерами\n";
+    cout << "Меню работы с учетной записи\n";
     cout << "Пожалуйста укажите пункт\n";
-    cout << "1 - Добавление менеджера\n";
-    cout << "2 - Редактирование менеджера\n";
-    cout << "3 - Удаление менеджера\n";
-    cout << "4 - Смена пароля менеджера\n";
-    cout << "8 - Назад\n";
-    cout << "9 - Выход\n";
-    cout << "Ваш выбор: ";
-}
-
-void DisplayWorkAtUserProfile()
-{
-    cout << "Меню работы с пользователями\n";
-    cout << "Пожалуйста укажите пункт\n";
-    cout << "1 - Добавление пользователя\n";
-    cout << "2 - Редактирование пользователя\n";
-    cout << "3 - Удаление пользователя\n";
-    cout << "4 - Смена пароля пользователя\n";
-    cout << "8 - Назад\n";
-    cout << "9 - Выход\n";
+    cout << "1 - Добавление учетной записи\n";
+    cout << "2 - Редактирование учетной записи\n";
+    cout << "3 - Удаление учетной записи\n";
+    cout << "4 - Смена пароля учетной записи\n";
+    cout << "5 - Назад\n";
+    cout << "6 - Выход\n";
     cout << "Ваш выбор: ";
 }
 
@@ -159,264 +196,335 @@ void DisplayMenuUser()
     cout << "Ваш выбор: ";
 }
 
-/// <summary>
-/// функции второго уровня
-/// </summary>
+
+/*
+============================================
+            функции второго уровня
+============================================
+*/
 
 void GetChoiceMenuAdmin()
 {
-    int choice = 0;
-    do
+    system("cls");
+    DisplayMenuAdmin();
+    int choice = getValueInt("Введите числовое значение:");
+    switch (choice)
     {
-        system("cls");
-        DisplayMenuAdmin();
-        choice = GetInput();
-        switch (choice)
-        {
-        case 1:
-            DisplayWorkAtFileData();
-            break;
-        case 2:
-            DisplayWorkAtRecords();
-            break;
-        case 3:
-            cout << "Просмотр всех записей в таблице";
-            break;
-        case 4:
-            DisplayMenuManager();
-            break;
-        case 5:
-            DisplayMenuUser();
-            break;
-        case 6:
-            cout << "Выход!";
-            break;
-        default:
-            break;
-        }
-    } while (choice != 3);
+    case 1:
+        GetChoiceWorkAtFileData();
+        break;
+    case 2:
+        GetChoiceWorkAtRecords();
+        break;
+    case 3:
+        cout << "Просмотр всех записей в таблице";
+        break;
+    case 4:
+        GetChoiceWorkAtProfile();
+        break;
+    case 5:
+        cout << "Выход!";
+        exit(0);
+    }
 }
 
 void GetChoiceWorkAtFileData()
 {
-    int choice = 0;
-    do
+    system("cls");
+    DisplayWorkAtFileData();
+    int choice = getValueInt("Введите числовое значение:");
+    switch (choice)
     {
-        system("cls");
-        DisplayWorkAtFileData();
-        choice = GetInput();
-        switch (choice)
-        {
-        case 1:
-            cout << "Создать файл данных сотрудников";
-            break;
-        case 2:
-            cout << "Создать файл данных отделов";
-            break;
-        case 3:
-            cout << "Удалить файл данных сотрудников";
-            break;
-        case 4:
-            cout << "Удалить файл данных отделов";
-            break;
-        case 5:
-            GetChoiceMenuAdmin();
-            break;
-        case 6:
-            cout << "Выход!";
-            break;
-        default:
-            break;
-        }
-    } while (choice != 3);
+    case 1:
+        cout << "Создать файл данных сотрудника";
+        break;
+    case 2:
+        cout << "Создать файл данных отделов";
+        break;
+    case 3:
+        cout << "Удалить файл данных сотрудников";
+        break;
+    case 4:
+        cout << "Удалить файл данных отделов";
+        break;
+    case 5:
+        GetChoiceMenuAdmin();
+        break;
+    case 6:
+        cout << "Выход!";
+        exit(0);
+    }
 }
 
 void GetChoiceWorkAtRecords()
 {
-    int choice = 0;
-    do
+    system("cls");
+    DisplayWorkAtRecords();
+    int choice = getValueInt("Введите числовое значение:");
+    switch (choice)
     {
-        system("cls");
-        DisplayWorkAtRecords();
-        choice = GetInput();
-        switch (choice)
-        {
-        case 1:
-            cout << "Добавление записи";
-            break;
-        case 2:
-            cout << "Редактирование записи";
-            break;
-        case 3:
-            cout << "Удаление записи";
-            break;
-        case 4:
-            cout << "Сортировка записей по имени";
-            break;
-        case 5:
-            cout << "Сортировка записей по фамилии";
-            break;
-        case 6:
-            cout << "Сортировка записей по оделу";
-            break;
-        case 7:
-            cout << "Просмотр всех записей в таблице";
-            break;
-        case 8:
-            GetChoiceMenuAdmin();
-            break;
-        case 9:
-            cout << "Выход!";
-            break;
-        default:
-            break;
-        }
-    } while (choice != 3);
+    case 1:
+        cout << "Добавление записи";
+        break;
+    case 2:
+        cout << "Редактирование записи";
+        break;
+    case 3:
+        cout << "Удаление записи";
+        break;
+    case 4:
+        cout << "Сортировка записей по имени";
+        break;
+    case 5:
+        cout << "Сортировка записей по фамилии";
+        break;
+    case 6:
+        cout << "Сортировка записей по оделу";
+        break;
+    case 7:
+        cout << "Просмотр всех записей в таблице";
+        break;
+    case 8:
+        GetChoiceMenuAdmin();
+        break;
+    case 9:
+        cout << "Выход!";
+        exit(0);
+    }
 }
 
-void GetChoiceWorkAtManagerProfile()
+void GetChoiceWorkAtProfile()
 {
-    int choice = 0;
-    do
+    system("cls");
+    DisplayWorkAtProfile();
+    int choice = getValueInt("Введите числовое значение:");
+    Profile newUser = Profile("", "", 0);
+    string out;
+    string oldUserName;
+    int continueAnsw;
+    bool ok = false;
+    ifstream fin;
+    switch (choice)   
     {
+    case 1:
         system("cls");
-        DisplayWorkAtManagerProfile();
-        choice = GetInput();
-        switch (choice)
+        cout << "Добавление новой учетной записи\n";
+        newUser = GetNewProfileData();
+        fin.open(newUser.name + ".txt", ios_base::in);
+        if (!fin.is_open()) // если файл не открыт
         {
-        case 1:
-            cout << "Добавление менеджера";
-            break;
-        case 2:
-            cout << "Редактирование менеджера";
-            break;
-        case 3:
-            cout << "Удаление менеджера";
-            break;
-        case 4:
-            cout << "Смена пароля менеджера";
-            break;
-        case 5:
-            GetChoiceMenuAdmin();
-            break;
-        case 6:
-            cout << "Выход!";
-            break;
-        default:
+            while (ok == false)
+            {
+                continueAnsw = getValueInt("Продолжаем?\n1 - Да\n2 - нет\n");
+                if (continueAnsw == 1 || continueAnsw == 2)
+                {
+                    ok = true;
+                }
+                else
+                {
+                    cout << "Введите одно из указанных чисел.\n";
+                }
+            }
+            if (continueAnsw == 1)
+            {
+                out = WorkProfileFD(newUser, false, false);
+                cout << out;
+                system("pause");
+                GetChoiceWorkAtProfile();
+            }
+            if (continueAnsw == 2)
+            {
+                cout << "Операция прервана\n";
+                GetChoiceWorkAtProfile();
+            }
+            ok = false;
             break;
         }
-    } while (choice != 3);
-}
+        else
+        {
+            fin.close();
+            cout << "Пользователь с таким логином существует.\n";
+            system("pause");
+            GetChoiceWorkAtProfile();
+            ok = false;
+            break;
+        }
+        
+    case 2:
+        system("cls");
+        cout << "Редактирование учетной записи\n";
+        newUser.name = getValueStr("Введите имя учетной записи, которую желаете изменить");
+        fin.open(newUser.name + ".txt", ios_base::in);
+        if (!fin.is_open()) // если файл не открыт
+        {
+            cout << "Пользователь с таким логином не найден.\n";
+            system("pause");
+            GetChoiceWorkAtProfile();
+            ok = false;
+            break;
+        }
+        else
+        {
+            fin.close();
+            ok = false;
+            while (ok == false)
+            {
+                continueAnsw = getValueInt("Продолжаем?\n1 - Да\n2 - нет\n");
+                if (continueAnsw == 1 || continueAnsw == 2)
+                {
+                    ok = true;
+                }
+                else
+                {
+                    cout << "Введите одно из указанных чисел.\n";
+                }
+            }
+            if (continueAnsw == 1)
+            {
+                cout << "Введите новые данные учетной записи\n";
+                out = WorkProfileFD(GetNewProfileData(), false, false);                                         // !!!!!!!!!!
+                cout << "Учетная запись изменена\n";
+                WorkProfileFD(newUser, false, true);
+                system("pause");
+                GetChoiceWorkAtProfile();
+            }
+            if (continueAnsw == 2)
+            {
+                cout << "Операция прервана\n";
+                GetChoiceWorkAtProfile();
+            }
+            ok = false;
+            break;
+        }
+    case 3:
+        cout << "Удаление учетной записи\n";
+        ok = false;
+        while (ok == false)
+        {
+            cout << "\033[2J\033[1;1H";
+            oldUserName = getValueStr("Введите логин удаляемого объекта");
+            string interimFN = oldUserName + ".txt";
+            ifstream finn(interimFN, ios_base::in);
+            if (!finn.is_open()) // если файл не открыт
+            {
+                cout << "Пользователь с таким логином не найден!\n";
+            }
+            else
+            {
+                finn.close();
+                ok = true;
+            }
+        }
+        ok = false;
+        while (ok == false)
+        {
+            continueAnsw = getValueInt("\nПродолжаем?\n1 - Да\n2 - нет\n");
+            if (continueAnsw == 1 || continueAnsw == 2)
+            {
+                ok = true;
+            }
+            else
+            {
+                cout << "Введите одно из указанных чисел.\n";
+            }
+        }
+        if (continueAnsw == 1)
+        {
+            newUser.name = oldUserName;
+            out = WorkProfileFD(newUser, false, true);
+            cout << out;
+            system("pause");
+            GetChoiceWorkAtProfile();
+        }
+        if (continueAnsw == 2)
+        {
+            cout << "Операция прервана\n";
+            GetChoiceWorkAtProfile();
+        }
 
-void GetChoiceWorkAtUserProfile()
-{
-    int choice = 0;
-    do
-    {
-        system("cls");
-        DisplayWorkAtUserProfile();
-        choice = GetInput();
-        switch (choice)
-        {
-        case 1:
-            cout << "Добавление пользователя";
-            break;
-        case 2:
-            cout << "Редактирование пользователя";
-            break;
-        case 3:
-            cout << "Удаление пользователя";
-            break;
-        case 4:
-            cout << "Смена пароля пользователя";
-            break;
-        case 5:
-            GetChoiceMenuAdmin();
-            break;
-        case 6:
-            cout << "Выход!";
-            break;
-        default:
-            break;
-        }
-    } while (choice != 3);
+        break;
+    case 4:
+        cout << "Смена пароля учетной записи\n";
+        out = WorkProfileFD(setNewPass(), false, true);
+        cout << "пароль изменен \n";
+        system("pause");
+        GetChoiceWorkAtProfile();
+        break;
+    case 5:
+        GetChoiceMenuAdmin();
+        break;
+    case 6:
+        cout << "Выход!\n";
+        exit(0);
+    }
 }
 
 void GetChoiceMenuManager()
 {
-    int choice = 0;
-    do
+    system("cls");
+    DisplayMenuManager();
+    int choice = getValueInt("Введите числовое значение:");
+    switch (choice)
     {
-        system("cls");
-        DisplayMenuManager();
-        choice = GetInput();
-        switch (choice)
-        {
-        case 1:
-            cout << "Добавление записи";
-            break;
-        case 2:
-            cout << "Редактирование записи";
-            break;
-        case 3:
-            cout << "Удаление записи";
-            break;
-        case 4:
-            cout << "Сортировка записей по имени";
-            break;
-        case 5:
-            cout << "Сортировка записей по фамилии";
-            break;
-        case 6:
-            cout << "Сортировка записей по оделу";
-            break;
-        case 7:
-            cout << "Просмотр всех записей в таблице";
-            break;
-        case 8:
-            cout << "Выход!";
-            break;
-        default:
-            break;
-        }
-    } while (choice != 3);
+    case 1:
+        cout << "Добавление записи";
+        break;
+    case 2:
+        cout << "Редактирование записи";
+        break;
+    case 3:
+        cout << "Удаление записи";
+        break;
+    case 4:
+        cout << "Сортировка записей по имени";
+        break;
+    case 5:
+        cout << "Сортировка записей по фамилии";
+        break;
+    case 6:
+        cout << "Сортировка записей по оделу";
+        break;
+    case 7:
+        cout << "Просмотр всех записей в таблице";
+        break;
+    case 8:
+        cout << "Выход!";
+        exit(0);
+    }
 }
 
 void GetChoiceMenuUser()
 {
-    int choice = 0;
-    do
+    system("cls");
+    DisplayMenuUser();
+    int choice = getValueInt("Введите числовое значение:");
+    switch (choice)
     {
-        system("cls");
-        DisplayMenuUser();
-        choice = GetInput();
-        switch (choice)
-        {
-        case 1:
-            cout << "Сортировка записей по имени";
-            break;
-        case 2:
-            cout << "Сортировка записей по фамилии";
-            break;
-        case 3:
-            cout << "Сортировка записей по оделу";
-            break;
-        case 4:
-            cout << "Просмотр всех записей в таблице";
-            break;
-        case 5:
-            cout << "Выход!";
-            break;
-        default:
-            break;
-        }
-    } while (choice != 3);
+    case 1:
+        cout << "Сортировка записей по имени";
+        break;
+    case 2:
+        cout << "Сортировка записей по фамилии";
+        break;
+    case 3:
+        cout << "Сортировка записей по оделу";
+        break;
+    case 4:
+        cout << "Просмотр всех записей в таблице";
+        break;
+    case 5:
+        cout << "Выход!";
+        exit(0);
+    }
 }
 
-/// <summary>
-/// функции проверки логина и пароля
-/// </summary>
+/*
+============================================
+            функции проверки
+============================================
+*/
 
+// проверка пароля и логина
 void GetLogiAndPass()
 {   
     bool ok = false;
@@ -429,8 +537,7 @@ void GetLogiAndPass()
         if (i == 1)
         {
             cout << "\033[2J\033[1;1H";
-            cout << "Введите логин:\n";
-            string choiceLogin = getValueStr();
+            string choiceLogin = getValueStr("Введите логин");
             string interimLogin = choiceLogin + ".txt";
             ifstream fin(interimLogin, ios_base::in);
             if (!fin.is_open()) // если файл не открыт
@@ -455,8 +562,7 @@ void GetLogiAndPass()
         if (i == 2)
         {
             cout << "\033[2J\033[1;1H";
-            cout << "Введите пароль:\n";
-            string choicePass = getValueStr();
+            string choicePass = getValueStr("Введите пароль");
             if (choicePass == filePass)
             {
                 ok = true;
@@ -472,10 +578,170 @@ void GetLogiAndPass()
     if (profile == 3) { GetChoiceMenuUser(); } 
 }
 
+// проверка на наличие файла данных
+bool SearchFD()
+{
+    ifstream fin("dataFile.txt", ios_base::in);
+    if (!fin.is_open())
+    {
+        return false;
+    }
+    else
+    {
+        fin.close();
+        return true;
+    }
+}
 
-/// <summary>
-/// функция первого уровня
-/// </summary>
+/*
+============================================
+      функции работы с файлом данных
+============================================
+*/
+
+// создание и затирание файла данных
+bool CreateOrDeleteFD(bool rewrote, bool createOrDelete)
+{
+    if (createOrDelete)
+    {
+        ofstream fout("dataFile.txt", ios_base::app);
+        fout << "#"; 
+        fout.close();
+        return true;
+    }
+    else
+    {
+        if (remove("dataFile.txt") != 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+}
+
+
+/*
+============================================
+      функции работы с пользователями
+============================================
+*/
+
+// запись данных в файла профиля
+string WorkProfileFD(Profile user, bool rePass, bool del)
+{
+    ofstream fout;
+    if (del) 
+    {
+        string out;
+        char* char_arr;
+        user.name = user.name + ".txt";
+        char_arr = &user.name[0];
+        if (remove(char_arr) != 0)
+        {
+            out = "Ошибка удаления. Попробуйте вручную.\n";
+        }
+        else
+        {
+            if (user.level == 2)
+            {
+                out = "Удален менеджер " + user.name + "\n";
+            }
+            if (user.level == 3)
+            {
+                out = "Удален пользователь " + user.name + "\n";
+            }
+        }
+        return out;
+    }
+    else
+    {
+        if (rePass)
+        {
+            fout.open(user.name + ".txt", ios_base::trunc);
+        }
+        else
+        {
+            fout.open(user.name + ".txt", ios_base::app);
+        }
+        fout << user.name + "\n";
+        fout << user.pass + "\n";
+        fout << user.level;
+        fout.close();
+        string out;
+        if (rePass)
+        {
+            if (user.level == 2)
+            {
+                out = "Изменен пароль менеджера " + user.name + "\n";
+            }
+            if (user.level == 3)
+            {
+                out = "Изменен пароль пользователя " + user.name + "\n";
+            }
+        }
+        else
+        {    
+            if (user.level == 2)
+            {
+                out = "Создан менеджер " + user.name + "\n";
+            }
+            if (user.level == 3)
+            {
+                out = "Создан пользователь " + user.name + "\n";
+            }
+        }
+        return out;
+    }
+    
+}
+
+// смена пароля имеющемуся пользователю                                                 добавить возможность возврата при отсутствующем профиле
+Profile setNewPass()
+{
+    bool ok = false;
+    Profile fileUser = Profile("", "", 0);
+    while (ok == false)
+    {
+        cout << "\033[2J\033[1;1H";
+        string choiceLogin = getValueStr("Введите логин изменяемого объекта");
+        string interimLogin = choiceLogin + ".txt";
+        ifstream fin(interimLogin, ios_base::in);
+        if (!fin.is_open()) // если файл не открыт
+        {
+            cout << "Пользователь с таким логином не найден!\n";
+        }
+        else
+        {
+            string line;
+            int j = 1;
+            while (getline(fin, line))
+            {
+                if (j == 1) { fileUser.name = line; }
+                if (j == 2) { fileUser.pass = line; }
+                if (j == 3) { fileUser.level = stoi(line); }
+                j++;
+            }
+            fin.close();
+            ok = true;
+        }
+    }
+    fileUser.pass = getValueStr("Введите пароль");
+    return fileUser;
+}
+
+// сбор данных для пользователя
+Profile GetNewProfileData()
+{
+    bool ok = false;
+    Profile fileUser = Profile("", "", 0);
+    fileUser.name = getValueStr("Введите имя объекта");
+    fileUser.pass = getValueStr("Введите пароль");
+    fileUser.level = getValueInt("Введите уровень доступа:\n1 - Администратор\n2 - Менеджер\n3 - Пользователь\nВаш выбор: ");
+    return fileUser;
+}
 
 
 
