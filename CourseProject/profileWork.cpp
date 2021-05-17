@@ -21,13 +21,33 @@ void GetLogiAndPass()
     {
         if (i == 1)
         {
-            cout << "\033[2J\033[1;1H";
+            system("cls");
             string choiceLogin = getValueStr("Введите логин");
             string interimLogin = choiceLogin + ".txt";
             ifstream fin(interimLogin, ios_base::in);
             if (!fin.is_open()) // если файл не открыт
             {
                 cout << "Пользователь с таким логином не найден!\n";
+                int continueAnsw;
+                bool okContin = false;
+                while (okContin == false)
+                {
+                    continueAnsw = getValueInt("Продолжаем?\n1 - Да\n2 - нет\n");
+                    if (continueAnsw == 1 || continueAnsw == 2)
+                    {
+                        okContin = true;
+                    }
+                    else
+                    {
+                        cout << "Введите одно из указанных чисел.\n" << endl;
+                    }
+                }
+                if (continueAnsw == 2)
+                {
+                    cout << "Операция прервана\n" << endl;
+                    system("pause");
+                    exit(0);
+                }
             }
             else
             {
@@ -46,7 +66,7 @@ void GetLogiAndPass()
         }
         if (i == 2)
         {
-            cout << "\033[2J\033[1;1H";
+            system("cls");
             string choicePass = getValueStr("Введите пароль");
             if (choicePass == filePass)
             {

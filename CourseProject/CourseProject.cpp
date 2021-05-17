@@ -9,6 +9,8 @@
 using namespace std;
 using std::string;
 
+bool choiceCreateFD = false;
+bool fileCreate;
 /*
 ============================================
             функции второго уровня
@@ -18,51 +20,143 @@ using std::string;
 void GetChoiceMenuAdmin()
 {
     system("cls");
-    DisplayMenuAdmin();
-    int choice = getValueInt("Введите числовое значение:");
-    switch (choice)
+    bool file = SearchFD();
+    if (!SearchFD() && !choiceCreateFD)
     {
-    case 1:
-        GetChoiceWorkAtFileData();
-        break;
-    case 2:
-        GetChoiceWorkAtRecords();
-        break;
-    case 3:
-        cout << "Просмотр всех записей в таблице";
-        break;
-    case 4:
-        GetChoiceWorkAtProfile();
-        break;
-    case 5:
-        cout << "Выход!";
-        exit(0);
+        cout << "===================================================" << endl;
+        cout << "       Файл данных сотрудников не существует       " << endl;
+        cout << "===================================================" << endl;
+        bool ok = false;
+        while (ok == false)
+        {
+            int continueAnsw = getValueInt("Создать файл данных? \n1 - Да\n2 - нет\n");
+            if (continueAnsw == 1 || continueAnsw == 2)
+            {
+                if (continueAnsw == 1)
+                {
+                    if (CreateOrDeleteFD(true))
+                    {
+                        cout << "Файл данных успешно создан" << endl;
+                        fileCreate = true;
+                        system("pause");
+                        GetChoiceMenuAdmin();
+                    }
+                    else
+                    {
+                        cout << "Ошибка при создании. Повторите попытку позже." << endl;
+                        fileCreate = false;
+                        system("pause");
+                        GetChoiceMenuAdmin();
+                    }
+                    ok = true;
+                }
+                if (continueAnsw == 2)
+                {
+                    cout << "Файл не будет создан." << endl;
+                    choiceCreateFD = true;
+                    fileCreate = false;
+                    system("pause");
+                    GetChoiceMenuAdmin();
+                }
+            }
+            else
+            {
+                cout << "Введите одно из указанных чисел.\n << endl";
+            }
+        }
     }
+    else
+    {
+        if (!fileCreate)
+        {
+            cout << "===================================================" << endl;
+            cout << "       Файл данных сотрудников не существует       " << endl;
+            cout << "===================================================" << endl;
+        }
+        DisplayMenuAdmin();
+        int choice = getValueInt("Введите числовое значение:");
+        switch (choice)
+        {
+        case 1:
+            GetChoiceWorkAtFileData();
+            break;
+        case 2:
+            GetChoiceWorkAtRecords();
+            break;
+        case 3:
+            system("cls");
+            cout << "===================================================" << endl;
+            cout << "           Просмотр всех записей в таблице         " << endl;
+            cout << "===================================================" << endl;
+            break;
+        case 4:
+            GetChoiceWorkAtProfile();
+            break;
+        case 5:
+            cout << "Выход!";
+            exit(0);
+        }
+    }
+   
 }
 
 void GetChoiceWorkAtFileData()
 {
     system("cls");
+    if (!fileCreate)
+    {
+        cout << "===================================================" << endl;
+        cout << "       Файл данных сотрудников не существует       " << endl;
+        cout << "===================================================" << endl;
+    }
     DisplayWorkAtFileData();
     int choice = getValueInt("Введите числовое значение:");
     switch (choice)
     {
     case 1:
-        cout << "Создать файл данных сотрудника";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "           Создать файл данных сотрудника          " << endl;
+        cout << "===================================================" << endl;
+        if (CreateOrDeleteFD(true))
+        {
+            cout << "Файл данных успешно создан" << endl;
+            fileCreate = true;
+            system("pause");
+            GetChoiceMenuAdmin();
+        }
+        else
+        {
+            cout << "Ошибка при создании. Повторите попытку позже." << endl;
+            fileCreate = false;
+            system("pause");
+            GetChoiceMenuAdmin();
+        }
         break;
     case 2:
-        cout << "Создать файл данных отделов";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "          Удалить файл данных сотрудников          " << endl;
+        cout << "===================================================" << endl;
+        if (CreateOrDeleteFD(false))
+        {
+            cout << "Файл данных успешно удален" << endl;
+            fileCreate = true;
+            system("pause");
+            GetChoiceMenuAdmin();
+        }
+        else
+        {
+            cout << "Ошибка при удалении. Повторите попытку позже." << endl;
+            fileCreate = false;
+            system("pause");
+            GetChoiceMenuAdmin();
+        }
         break;
     case 3:
-        cout << "Удалить файл данных сотрудников";
-        break;
-    case 4:
-        cout << "Удалить файл данных отделов";
-        break;
-    case 5:
         GetChoiceMenuAdmin();
         break;
-    case 6:
+    case 4:
         cout << "Выход!";
         exit(0);
     }
@@ -71,30 +165,72 @@ void GetChoiceWorkAtFileData()
 void GetChoiceWorkAtRecords()
 {
     system("cls");
+    if (!fileCreate)
+    {
+        cout << "===================================================" << endl;
+        cout << "       Файл данных сотрудников не существует       " << endl;
+        cout << "===================================================" << endl;
+    }
     DisplayWorkAtRecords();
     int choice = getValueInt("Введите числовое значение:");
     switch (choice)
     {
     case 1:
-        cout << "Добавление записи";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "                Добавление записи                  " << endl;
+        cout << "===================================================" << endl;
+        if (creatRecordInFD())
+        {
+            cout << "Запись успешно добавлена" << endl;
+            system("pause");
+            GetChoiceWorkAtRecords();
+        }
+        else
+        {
+            cout << "Запись успешно добавлена" << endl;
+            system("pause");
+            GetChoiceWorkAtRecords();
+        }
         break;
     case 2:
-        cout << "Редактирование записи";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "                Редактирование записи              " << endl;
+        cout << "===================================================" << endl;
         break;
     case 3:
-        cout << "Удаление записи";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "                  Удаление записи                  " << endl;
+        cout << "===================================================" << endl;
         break;
     case 4:
-        cout << "Сортировка записей по имени";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "            Сортировка записей по имени            " << endl;
+        cout << "===================================================" << endl;
         break;
     case 5:
-        cout << "Сортировка записей по фамилии";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "           Сортировка записей по фамилии           " << endl;
+        cout << "===================================================" << endl;
         break;
     case 6:
-        cout << "Сортировка записей по оделу";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "             Сортировка записей по оделу           " << endl;
+        cout << "===================================================" << endl;
         break;
     case 7:
-        cout << "Просмотр всех записей в таблице";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "           Просмотр всех записей в таблице         " << endl;
+        cout << "===================================================" << endl;
+        printTable();
+        system("pause");
+        GetChoiceWorkAtRecords();
         break;
     case 8:
         GetChoiceMenuAdmin();
@@ -108,6 +244,12 @@ void GetChoiceWorkAtRecords()
 void GetChoiceWorkAtProfile()
 {
     system("cls");
+    if (!fileCreate)
+    {
+        cout << "===================================================" << endl;
+        cout << "       Файл данных сотрудников не существует       " << endl;
+        cout << "===================================================" << endl;
+    }
     DisplayWorkAtProfile();
     int choice = getValueInt("Введите числовое значение:");
     Profile newUser = Profile("", "", 0);
@@ -120,11 +262,13 @@ void GetChoiceWorkAtProfile()
     {
     case 1:
         system("cls");
-        cout << "Добавление новой учетной записи\n";
+        cout << "===================================================" << endl;
+        cout << "           Добавление новой учетной записи         " << endl;
+        cout << "===================================================" << endl;
         newUser = GetNewProfileData();
         if (newUser.level > 3)
         {
-            cout << "Указан неверный уровень учетной записи.\n";
+            cout << "Указан неверный уровень учетной записи.\n" << endl;
             system("pause");
             GetChoiceWorkAtProfile();
         }
@@ -140,7 +284,7 @@ void GetChoiceWorkAtProfile()
                 }
                 else
                 {
-                    cout << "Введите одно из указанных чисел.\n";
+                    cout << "Введите одно из указанных чисел.\n" << endl;
                 }
             }
             if (continueAnsw == 1)
@@ -152,7 +296,7 @@ void GetChoiceWorkAtProfile()
             }
             if (continueAnsw == 2)
             {
-                cout << "Операция прервана\n";
+                cout << "Операция прервана\n" << endl;
                 GetChoiceWorkAtProfile();
             }
             ok = false;
@@ -170,7 +314,9 @@ void GetChoiceWorkAtProfile()
         
     case 2:
         system("cls");
-        cout << "Редактирование учетной записи\n";
+        cout << "===================================================" << endl;
+        cout << "           Редактирование учетной записи           " << endl;
+        cout << "===================================================" << endl;
         newUser.name = getValueStr("Введите имя учетной записи, которую желаете изменить");
         fin.open(newUser.name + ".txt", ios_base::in);
         if (!fin.is_open()) // если файл не открыт
@@ -200,7 +346,7 @@ void GetChoiceWorkAtProfile()
             if (continueAnsw == 1)
             {
                 cout << "Введите новые данные учетной записи\n";
-                out = WorkProfileFD(GetNewProfileData(), false, false);                                         // !!!!!!!!!!
+                out = WorkProfileFD(GetNewProfileData(), false, false);
                 cout << "Учетная запись изменена\n";
                 WorkProfileFD(newUser, false, true);
                 system("pause");
@@ -215,11 +361,14 @@ void GetChoiceWorkAtProfile()
             break;
         }
     case 3:
-        cout << "Удаление учетной записи\n";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "              Удаление учетной записи              " << endl;
+        cout << "===================================================" << endl;
         ok = false;
         while (ok == false)
         {
-            cout << "\033[2J\033[1;1H";
+            system("pause");
             oldUserName = getValueStr("Введите логин удаляемого объекта");
             string interimFN = oldUserName + ".txt";
             ifstream finn(interimFN, ios_base::in);
@@ -262,7 +411,10 @@ void GetChoiceWorkAtProfile()
 
         break;
     case 4:
-        cout << "Смена пароля учетной записи\n";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "             Смена пароля учетной записи           " << endl;
+        cout << "===================================================" << endl;
         out = WorkProfileFD(setNewPass(), false, true);
         cout << "пароль изменен \n";
         system("pause");
@@ -280,30 +432,60 @@ void GetChoiceWorkAtProfile()
 void GetChoiceMenuManager()
 {
     system("cls");
+    if (!fileCreate)
+    {
+        cout << "===================================================" << endl;
+        cout << "       Файл данных сотрудников не существует       " << endl;
+        cout << "===================================================" << endl;
+        system("pause");
+        cout << "Выход!\n";
+        exit(0);
+    }
     DisplayMenuManager();
     int choice = getValueInt("Введите числовое значение:");
     switch (choice)
     {
     case 1:
-        cout << "Добавление записи";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "                Добавление записи                  " << endl;
+        cout << "===================================================" << endl;
         break;
     case 2:
-        cout << "Редактирование записи";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "                Редактирование записи              " << endl;
+        cout << "===================================================" << endl;
         break;
     case 3:
-        cout << "Удаление записи";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "                  Удаление записи                  " << endl;
+        cout << "===================================================" << endl;
         break;
     case 4:
-        cout << "Сортировка записей по имени";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "            Сортировка записей по имени            " << endl;
+        cout << "===================================================" << endl;
         break;
     case 5:
-        cout << "Сортировка записей по фамилии";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "           Сортировка записей по фамилии           " << endl;
+        cout << "===================================================" << endl;
         break;
     case 6:
-        cout << "Сортировка записей по оделу";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "             Сортировка записей по оделу           " << endl;
+        cout << "===================================================" << endl;
         break;
     case 7:
-        cout << "Просмотр всех записей в таблице";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "           Просмотр всех записей в таблице         " << endl;
+        cout << "===================================================" << endl;
         break;
     case 8:
         cout << "Выход!";
@@ -314,26 +496,48 @@ void GetChoiceMenuManager()
 void GetChoiceMenuUser()
 {
     system("cls");
+    if (!fileCreate)
+    {
+        cout << "===================================================" << endl;
+        cout << "       Файл данных сотрудников не существует       " << endl;
+        cout << "===================================================" << endl;
+        system("pause");
+        cout << "Выход!\n";
+        exit(0);
+    }
     DisplayMenuUser();
     int choice = getValueInt("Введите числовое значение:");
     switch (choice)
     {
     case 1:
-        cout << "Сортировка записей по имени";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "            Сортировка записей по имени            " << endl;
+        cout << "===================================================" << endl;
         break;
     case 2:
-        cout << "Сортировка записей по фамилии";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "           Сортировка записей по фамилии           " << endl;
+        cout << "===================================================" << endl;
         break;
     case 3:
-        cout << "Сортировка записей по оделу";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "             Сортировка записей по оделу           " << endl;
+        cout << "===================================================" << endl;
         break;
     case 4:
-        cout << "Просмотр всех записей в таблице";
+        system("cls");
+        cout << "===================================================" << endl;
+        cout << "           Просмотр всех записей в таблице         " << endl;
+        cout << "===================================================" << endl;
         break;
     case 5:
         cout << "Выход!";
         exit(0);
     }
+
 }
 
 
@@ -341,5 +545,6 @@ int main(int argc, char* argv[])
 {
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
+    fileCreate = SearchFD();
     GetLogiAndPass();
 }

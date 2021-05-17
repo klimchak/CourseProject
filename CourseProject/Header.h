@@ -8,6 +8,13 @@
 #include <cstdlib>
 #include "Profile.h"
 
+
+struct Education;
+
+struct workAt;
+
+struct worker;
+
 /*
 ============================================
             объ€вление функций
@@ -46,6 +53,13 @@ void GetLogiAndPass();
 // проверка на наличие файла данных
 bool SearchFD();
 // создание и затирание файла данных
-bool CreateOrDeleteFD(bool rewrote, bool createOrDelete);
+bool CreateOrDeleteFD(bool createOrDelete);
+// получение данных нового работника
+worker CreateWorker();
+// запись данных нового работника в файл данных
+bool creatRecordInFD();
+// принт таблицы файла данных
+void printTable();
+
 
 #endif
