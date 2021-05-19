@@ -140,18 +140,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CourseProject.cpp" />
-    <ClCompile Include="exampleCode.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="funcPrintMenu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="funcRecordsFD.cpp" />
     <ClCompile Include="profileWork.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="workWithDate.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +156,34 @@
     <ClInclude Include="Profile.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="resource1.h" />
+    <ClInclude Include="tabulate\asciidoc_exporter.hpp" />
+    <ClInclude Include="tabulate\cell.hpp" />
+    <ClInclude Include="tabulate\color.hpp" />
+    <ClInclude Include="tabulate\column.hpp" />
+    <ClInclude Include="tabulate\column_format.hpp" />
+    <ClInclude Include="tabulate\exporter.hpp" />
+    <ClInclude Include="tabulate\font_align.hpp" />
+    <ClInclude Include="tabulate\font_style.hpp" />
+    <ClInclude Include="tabulate\format.hpp" />
+    <ClInclude Include="tabulate\latex_exporter.hpp" />
+    <ClInclude Include="tabulate\markdown_exporter.hpp" />
+    <ClInclude Include="tabulate\optional_lite.hpp" />
+    <ClInclude Include="tabulate\printer.hpp" />
+    <ClInclude Include="tabulate\row.hpp" />
+    <ClInclude Include="tabulate\table.hpp" />
+    <ClInclude Include="tabulate\table_internal.hpp" />
+    <ClInclude Include="tabulate\tabulate.hpp" />
+    <ClInclude Include="tabulate\termcolor.hpp" />
+    <ClInclude Include="tabulate\utf8.hpp" />
+    <ClInclude Include="tabulate\variant_lite.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CourseProject.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Downloads\xterm_color_32x32_22444.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

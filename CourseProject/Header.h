@@ -10,11 +10,9 @@
 
 
 struct Education;
-
 struct workAt;
-
 struct worker;
-
+extern bool availabilityWorker;
 /*
 ============================================
             объ€вление функций
@@ -22,8 +20,8 @@ struct worker;
 */
 // проверка на наличие файла данных
 bool SearchFD();
-// создание и затирание файла данных
-bool CreateOrDeleteFD(bool rewrote, bool createOrDelete);
+// проеверка файла админа
+bool CreateOrDeleteAdminFile();
 // запись данных в файла профил€
 string WorkProfileFD(Profile user, bool rePass, bool del);
 // смена парол€ имеющемус€ пользователю
@@ -38,7 +36,6 @@ void GetChoiceWorkAtProfile();
 void GetChoiceMenuManager();
 void GetChoiceMenuUser();
 // функции принта меню
-void DisplayMainMenu();
 void DisplayMenuAdmin();
 void DisplayWorkAtFileData();
 void DisplayWorkAtRecords();
@@ -46,7 +43,9 @@ void DisplayWorkAtProfile();
 void DisplayMenuManager();
 void DisplayMenuUser();
 // функции получени€ значени€ с клавиатуры
+// получени€ значени€ int
 int getValueInt(string mess);
+// получени€ значени€ string
 string getValueStr(string mess);
 // проверка парол€ и логина
 void GetLogiAndPass();
@@ -54,12 +53,29 @@ void GetLogiAndPass();
 bool SearchFD();
 // создание и затирание файла данных
 bool CreateOrDeleteFD(bool createOrDelete);
-// получение данных нового работника
-worker CreateWorker();
-// запись данных нового работника в файл данных
-bool creatRecordInFD();
+// сбор сведений по работнику
+worker aggregationWorkerData();
+// запись данных нового работника в файл данных (перезапись файла)
+bool creatRecordInFD(bool atMemory);
 // принт таблицы файла данных
 void printTable();
-
-
+// принт таблицы файла данных сокращенно
+void printTableAbbr();
+// получение данных работников в пам€ть
+void getAllWorkerFD();
+// удаление данных работника в пам€ти и перезапись в файл
+bool deleteWirkerInMemory();
+// изменение данных работника в пам€ти и перезапись в файл
+bool changeWirkerInMemory();
+//сортировка
+// компаратор last name
+bool comparareLastName(const worker lhs, const worker rhs);
+// компаратор first name
+bool comparareFirstName(const worker lhs, const worker rhs);
+// компаратор patronymic
+bool comparareDepartment(const worker lhs, const worker rhs);
+// функци€ сортировки
+void sortLN();
+void sortFN();
+void sortDep();
 #endif

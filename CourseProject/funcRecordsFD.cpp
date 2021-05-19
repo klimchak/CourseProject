@@ -8,6 +8,18 @@
 #include <stdio.h>
 #include <sstream>
 #include <vector>
+#include <algorithm>
+#include "tabulate/table.hpp"
+using namespace tabulate;
+
+#if __cplusplus >= 201703L
+#include <variant>
+using std::variant;
+#else
+#include "tabulate/variant_lite.hpp"
+using nonstd::variant;
+#endif
+using Row_t = std::vector<variant<std::string, const char*, Table>>;
 
 using namespace std;
 using std::string;
@@ -41,166 +53,204 @@ struct worker
 };
 
 vector<worker> allWolker;
+bool availabilityWorker;
+
+// =====================================================
+//         сортировка
+// =====================================================
+// компараторы
+bool comparareLastName(const worker lhs, const worker rhs) {
+    return lhs.lastName > rhs.lastName;
+}
+bool comparareFirstName(const worker lhs, const worker rhs) {
+    return lhs.firstName > rhs.firstName;
+}
+bool comparareDepartment(const worker lhs, const worker rhs) {
+    return lhs.workerPosition.department > rhs.workerPosition.department;
+}
+// сортировка по фамилии
+void sortLN() {
+    sort(allWolker.begin(), allWolker.end(), comparareLastName);
+}
+// сортировка по имени
+void sortFN() {
+    sort(allWolker.begin(), allWolker.end(), comparareFirstName);
+}
+// сортировка по отделу
+void sortDep() {
+    sort(allWolker.begin(), allWolker.end(), comparareDepartment);
+}
 
 // делитель строки
 vector<string> split(const string& s, char delim) {
     vector<string> result;
     stringstream ss(s);
     string item;
-
     while (getline(ss, item, delim)) {
         result.push_back(item);
     }
-
     return result;
 }
 
-// получение данных нового работника
-worker CreateWorker()
+// запись данных нового работника в файл данных (перезапись файла)
+bool creatRecordInFD(bool atMemory)
 {
-    worker newWorker;
-    bool ok = false;
-    int colStep = 7;
-    int step = 0;
-    while (step > colStep)
+    if (atMemory)
     {
-        if (step == 0)
+        vector<string> allString;
+        
+        for (worker wk : allWolker)
         {
-            newWorker.firstName = getValueStr("Введите имя");
-            step++;
+            string outStrInterim = "";
+            outStrInterim = outStrInterim + "#" + wk.lastName
+                            + "#" + wk.firstName
+                            + "#" + wk.patronymic
+                            + "#" + wk.birtday
+                            + "#" + wk.educationWorker.nameEdComp
+                            + "#" + wk.educationWorker.spacialization
+                            + "#" + to_string(wk.educationWorker.yearEndEducation)
+                            + "#" + wk.martStatus
+                            + "#" + wk.homeTelNumber
+                            + "#" + wk.workerPosition.dateStartWork
+                            + "#" + wk.workerPosition.department
+                            + "#" + wk.workerPosition.position
+                            + "#" + wk.workerPosition.workTelNumber
+                            + "#" + wk.workerPosition.dateStopWork;
+            allString.push_back(outStrInterim);
         }
-        if (step == 1)
+        std::ofstream out("dataFile.txt", std::ios::trunc);
+        if (out.is_open())
         {
-            newWorker.lastName = getValueStr("Введите фамилию");
-            step++;
+            for (string strInFile : allString)
+            {
+                out << strInFile << std::endl;
+            }
+            
         }
-        if (step == 2)
-        {
-            newWorker.patronymic = getValueStr("Введите отчество");
-            step++;
-        }
-        if (step == 3)
-        {
-            newWorker.birtday = getValueStr("Введите дату рождения в формате мм-дд-гггг : ");
-            step++;
-        }
-        if (step == 4)
-        {
-            newWorker.educationWorker.nameEdComp = getValueStr("Введите наименование УО");
-            newWorker.educationWorker.spacialization = getValueStr("Введите специализацию");
-            newWorker.educationWorker.yearEndEducation = getValueInt("Введите год окончания УО");
-            step++;
-        }
-        if (step == 5)
-        {
-            newWorker.martStatus = getValueStr("Укажите семейное положение");
-            step++;
-        }
-        if (step == 6)
-        {
-            cout << "\n Введите номер в формате 121234567\n";
-            char intStr[10];
-            cin.getline(intStr, 10);
-            string intStrEnd = "";
-            intStrEnd = intStrEnd + "+375(" + intStr[0] + intStr[1] + ")" + intStr[2] + intStr[3] + intStr[4] + "-" + intStr[5] + intStr[6] + "-" + intStr[7] + intStr[8];;
-            newWorker.homeTelNumber = intStrEnd;
-            step++;
-        }
-        if (step == 7)
-        {
-            newWorker.workerPosition.dateStartWork = getValueStr("Введите дату прриема на работу в формате мм-дд-гггг : ");
-            newWorker.workerPosition.department = getValueStr("Введите название отдела : ");
-            newWorker.workerPosition.position = getValueStr("Введите должность : ");
-            cout << "\n Введите работчий номер телефона в формате 121234567\n";
-            char intStr[10];
-            cin.getline(intStr, 10);
-            string intStrEnd = "";
-            intStrEnd = intStrEnd + "+375(" + intStr[0] + intStr[1] + ")" + intStr[2] + intStr[3] + intStr[4] + "-" + intStr[5] + intStr[6] + "-" + intStr[7] + intStr[8];;
-            newWorker.workerPosition.workTelNumber = intStrEnd;
-            newWorker.workerPosition.dateStopWork = getValueStr("Введите дату прриема на работу в формате мм-дд-гггг : ");
-            step++;
-        }
+        out.close();
+        return true;
     }
-    return newWorker;
-}
-
-// запись данных нового работника в файл данных
-bool creatRecordInFD()
-{
-    worker newWorker;
-    newWorker.firstName = getValueStr("Введите имя");
-    newWorker.lastName = getValueStr("Введите фамилию");
-    newWorker.patronymic = getValueStr("Введите отчество");
-    newWorker.birtday = getValueStr("Введите дату рождения в формате мм-дд-гггг : ");
-    newWorker.educationWorker.nameEdComp = getValueStr("Введите наименование УО");
-    newWorker.educationWorker.spacialization = getValueStr("Введите специализацию");
-    newWorker.educationWorker.yearEndEducation = getValueInt("Введите год окончания УО");
-    newWorker.martStatus = getValueStr("Укажите семейное положение");
-    char* intStr;
-    string intStrLine = getValueStr("Введите номер в формате 121234567");
-    intStr = &intStrLine[0];
-    string intStrEnd = "";
-    intStrEnd = intStrEnd + "+375(" + intStr[0] + intStr[1] + ")" + intStr[2] + intStr[3] + intStr[4] + "-" + intStr[5] + intStr[6] + "-" + intStr[7] + intStr[8];;
-    newWorker.homeTelNumber = intStrEnd;
-    newWorker.workerPosition.dateStartWork = getValueStr("Введите дату прриема на работу в формате мм-дд-гггг : ");
-    newWorker.workerPosition.department = getValueStr("Введите название отдела : ");
-    newWorker.workerPosition.position = getValueStr("Введите должность : ");
-    char* intStr2;
-    string intStrLine2 = getValueStr("Введите номер в формате 121234567");
-    intStr2 = &intStrLine2[0];
-    string intStrEnd2 = "";
-    intStrEnd2 = intStrEnd2 + "+375(" + intStr2[0] + intStr2[1] + ")" + intStr2[2] + intStr2[3] + intStr2[4] + "-" + intStr2[5] + intStr2[6] + "-" + intStr2[7] + intStr2[8];;
-    newWorker.workerPosition.workTelNumber = intStrEnd2;
-    newWorker.workerPosition.dateStopWork = getValueStr("Введите дату увольнения в формате мм-дд-гггг : ");
-    string outStr = "";
-    outStr = outStr + newWorker.lastName
-        + "#" + newWorker.lastName
-        + "#" + newWorker.firstName
-        + "#" + newWorker.patronymic
-        + "#" + newWorker.birtday
-        + "#" + newWorker.educationWorker.nameEdComp
-        + "#" + newWorker.educationWorker.spacialization
-        + "#" + to_string(newWorker.educationWorker.yearEndEducation)
-        + "#" + newWorker.martStatus
-        + "#" + newWorker.homeTelNumber
-        + "#" + newWorker.workerPosition.dateStartWork
-        + "#" + newWorker.workerPosition.department
-        + "#" + newWorker.workerPosition.position
-        + "#" + newWorker.workerPosition.workTelNumber
-        + "#" + newWorker.workerPosition.dateStopWork;
-    std::ofstream out("dataFile.txt", std::ios::app);
-    if (out.is_open())
+    else
     {
-        out << outStr << std::endl;
+        worker newWorker = aggregationWorkerData();
+        string outStr = "";
+        outStr = outStr + "#" + newWorker.lastName
+            + "#" + newWorker.firstName
+            + "#" + newWorker.patronymic
+            + "#" + newWorker.birtday
+            + "#" + newWorker.educationWorker.nameEdComp
+            + "#" + newWorker.educationWorker.spacialization
+            + "#" + to_string(newWorker.educationWorker.yearEndEducation)
+            + "#" + newWorker.martStatus
+            + "#" + newWorker.homeTelNumber
+            + "#" + newWorker.workerPosition.dateStartWork
+            + "#" + newWorker.workerPosition.department
+            + "#" + newWorker.workerPosition.position
+            + "#" + newWorker.workerPosition.workTelNumber
+            + "#" + newWorker.workerPosition.dateStopWork;
+        std::ofstream out("dataFile.txt", std::ios::app);
+        if (out.is_open())
+        {
+            out << outStr << std::endl;
+        }
+        out.close();
+        return true;
     }
-    out.close();
-    return true;
+    
 }
-
-// получение данных работников
-
-
 
 // принт таблицы файла данных
 void printTable()
+{
+    if (allWolker.size() > 0)
+    {
+        Table workers;
+        workers.add_row(Row_t{ "Фамилия", "Имя", "Отчество", "Дата рождения", "Сем. положение \n" "Дом. телефон", 
+                                "Образование:\n- оконченное УО;\n- специализация\n- год окончания", "Дата приёма", 
+                                "Сведения о найме:\n- отдел,\n- должность,\n- рабочий телефон", "Дата увольнения"});
+        for (size_t i = 0; i < allWolker.size(); i++)
+        {            
+            workers.add_row(Row_t{ allWolker[i].lastName, allWolker[i].firstName, allWolker[i].patronymic, allWolker[i].birtday, 
+                                    allWolker[i].martStatus + "\n" + allWolker[i].homeTelNumber, allWolker[i].educationWorker.nameEdComp + "\n" + allWolker[i].educationWorker.spacialization + "\n" + 
+                                    to_string(allWolker[i].educationWorker.yearEndEducation) , allWolker[i].workerPosition.dateStartWork, allWolker[i].workerPosition.department + "\n" + 
+                                    allWolker[i].workerPosition.position + "\n" + allWolker[i].workerPosition.workTelNumber, allWolker[i].workerPosition.dateStopWork });
+        }
+        workers.add_row(Row_t{ "Итого сотрудников: ", to_string(allWolker.size()), "", "", "", "", "", "", "" });
+        workers.column(0).format().font_align(FontAlign::center);
+        workers.column(1).format().font_align(FontAlign::center);
+        workers.column(2).format().font_align(FontAlign::center);
+        workers.column(3).format().font_align(FontAlign::center);
+        workers.column(6).format().font_align(FontAlign::center);
+        workers.column(8).format().font_align(FontAlign::center);
+        int a = allWolker.size() + 1;
+        for (size_t i = 0; i < 9; ++i) {
+            workers[0][i].format().font_color(Color::yellow).font_style({ FontStyle::bold });
+            workers[a][i].format().font_color(Color::green).font_style({ FontStyle::bold });
+        }
+        std::cout << workers << "\n\n";
+    }
+    else
+    {
+        cout << "                                                   " << endl;
+        cout << "              Записей не обнаружено.               " << endl;
+        cout << "                                                   " << endl;
+    }
+}
+
+// принт таблицы файла данных сокращенно
+void printTableAbbr()
+{
+    if (allWolker.size() > 0)
+    {
+        Table workers;
+        workers.add_row(Row_t{ "Фамилия", "Имя", "Отчество", "Дата рождения", "Сем. положение \n" "Дом. телефон",  
+                                "Сведения о найме:\n- отдел,\n- должность,\n- рабочий телефон"});
+        for (size_t i = 0; i < allWolker.size(); i++)
+        {            
+            workers.add_row(Row_t{ allWolker[i].lastName, allWolker[i].firstName, allWolker[i].patronymic, allWolker[i].birtday, 
+                                    allWolker[i].martStatus + "\n" + allWolker[i].homeTelNumber,  allWolker[i].workerPosition.department + "\n" + 
+                                    allWolker[i].workerPosition.position + "\n" + allWolker[i].workerPosition.workTelNumber });
+        }
+        workers.add_row(Row_t{ "Итого сотрудников: ", to_string(allWolker.size()), "", "", "",  "" });
+        workers.column(0).format().font_align(FontAlign::center);
+        workers.column(1).format().font_align(FontAlign::center);
+        workers.column(2).format().font_align(FontAlign::center);
+        workers.column(3).format().font_align(FontAlign::center);
+        int a = allWolker.size() + 1;
+        for (size_t i = 0; i < 6; ++i) {
+            workers[0][i].format().font_color(Color::yellow).font_style({ FontStyle::bold });
+            workers[a][i].format().font_color(Color::green).font_style({ FontStyle::bold });
+        }
+        std::cout << workers << "\n\n";
+    }
+    else
+    {
+        cout << "                                                   " << endl;
+        cout << "              Записей не обнаружено.               " << endl;
+        cout << "                                                   " << endl;
+    }
+}
+
+// получение данных работников в память
+void getAllWorkerFD()
 {
     int amountOfWorker = 0;
     ifstream fin("dataFile.txt", ios_base::in);
     string line;
     vector<string> strs;
-
     if (!fin.is_open())
     {
         cout << "not" << endl;
+        availabilityWorker = false;
     }
     else
     {
+        allWolker.clear();
         while (getline(fin, line))
         {
             amountOfWorker++;
             strs.push_back(line);
         }
-
         for (string u : strs)
         {
             vector<string> workerVect = split(u, '#');
@@ -254,20 +304,114 @@ void printTable()
                 }
             }
             allWolker.push_back(interimWorker);
+            if (allWolker.size() > 0)
+            {
+                availabilityWorker = true;
+            }
+            else
+            {
+                availabilityWorker = false;
+            }
         }
-        cout << "№\t" << "Фамилия\t" << "Имя\t" << "Отчество\t" << "Дата рождения\t" << "Семмейное положение\t\t" << "Дом. телефон" << endl;
-        cout << "==================================================================" << endl;
-        for (int i = 0; i < allWolker.size(); i++)
+    }
+}
+
+// изменение данных работника в памяти и перезапись в файл
+bool changeWirkerInMemory()
+{
+    string searchWorkerLN = getValueStr("    Введите фамилию работника");
+    string searchWorkerFN = getValueStr("    Введите имя работника");
+    int indexWorker = -1;
+    for (size_t i = 0; i < allWolker.size(); i++)
+    {
+        if (allWolker[i].firstName == searchWorkerFN)
         {
-            cout << i + 1 << '\t' << allWolker[i].lastName << '\t' << allWolker[i].firstName
-                << '\t' << allWolker[i].patronymic << '\t' << allWolker[i].birtday << '\t'
-                << allWolker[i].martStatus << '/' << allWolker[i].homeTelNumber << '/' << endl;
+            if (allWolker[i].lastName == searchWorkerLN)
+            {
+                indexWorker = i;
+            }
         }
         
     }
-
+    if (indexWorker < 0)
+    {
+        return false;
+    }
+    worker newWorker = aggregationWorkerData();
+    allWolker[indexWorker] = newWorker;
+    if (creatRecordInFD(true))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
+// удаление данных работника в памяти и перезапись в файл
+bool deleteWirkerInMemory()
+{
+    string searchWorkerLN = getValueStr("    Введите фамилию работника");
+    string searchWorkerFN = getValueStr("    Введите имя работника");
+    int indexWorker = -1;
+    auto iter = allWolker.cbegin();
+    for (size_t i = 0; i < allWolker.size(); i++)
+    {
+        if (allWolker[i].firstName == searchWorkerFN)
+        {
+            if (allWolker[i].lastName == searchWorkerLN)
+            {
+                indexWorker = i;
+            }
+        }
+
+    }
+    if (indexWorker < 0)
+    {
+        return false;
+    }
+    allWolker.erase(iter + indexWorker);
+    if (creatRecordInFD(true))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+// сбор сведений по работнику
+worker aggregationWorkerData() {
+    worker newWorker;
+    newWorker.firstName = getValueStr("    Введите имя");
+    newWorker.lastName = getValueStr("    Введите фамилию");
+    newWorker.patronymic = getValueStr("    Введите отчество");
+    newWorker.birtday = getValueStr("    Введите дату рождения в формате мм-дд-гггг : ");
+    newWorker.educationWorker.nameEdComp = getValueStr("    Введите наименование УО");
+    newWorker.educationWorker.spacialization = getValueStr("    Введите специализацию");
+    newWorker.educationWorker.yearEndEducation = getValueInt("    Введите год окончания УО");
+    newWorker.martStatus = getValueStr("    Укажите семейное положение");
+    char* intStr;
+    string intStrLine = getValueStr("    Введите номер в формате 121234567");
+    intStr = &intStrLine[0];
+    string intStrEnd = "";
+    intStrEnd = intStrEnd + "+375(" + intStr[0] + intStr[1] + ")" + intStr[2] + intStr[3] + intStr[4] + "-" + intStr[5] + intStr[6] + "-" + intStr[7] + intStr[8];;
+    newWorker.homeTelNumber = intStrEnd;
+    newWorker.workerPosition.dateStartWork = getValueStr("    Введите дату прриема на работу в формате мм-дд-гггг : ");
+    newWorker.workerPosition.department = getValueStr("    Введите название отдела : ");
+    newWorker.workerPosition.position = getValueStr("    Введите должность : ");
+    char* intStr2;
+    string intStrLine2 = getValueStr("    Введите номер в формате 121234567");
+    intStr2 = &intStrLine2[0];
+    string intStrEnd2 = "";
+    intStrEnd2 = intStrEnd2 + "+375(" + intStr2[0] + intStr2[1] + ")" + intStr2[2] + intStr2[3] + intStr2[4] + "-" + intStr2[5] + intStr2[6] + "-" + intStr2[7] + intStr2[8];;
+    newWorker.workerPosition.workTelNumber = intStrEnd2;
+    newWorker.workerPosition.dateStopWork = getValueStr("    Введите дату увольнения в формате мм-дд-гггг : ");
+    return newWorker;
+}
 
 // проверка на наличие файла данных
 bool SearchFD()
@@ -280,6 +424,10 @@ bool SearchFD()
     else
     {
         fin.close();
+        if (!availabilityWorker)
+        {
+            getAllWorkerFD();
+        }
         return true;
     }
 }
@@ -301,7 +449,23 @@ bool CreateOrDeleteFD(bool createOrDelete)
         }
         else
         {
+            allWolker.clear();
             return true;
         }
+    }
+}
+
+// проеверка файла админа
+bool CreateOrDeleteAdminFile()
+{
+    ifstream fin("admin.txt", ios_base::in);
+    if (!fin.is_open())
+    {
+        return false;
+    }
+    else
+    {
+        fin.close();
+        return true;
     }
 }

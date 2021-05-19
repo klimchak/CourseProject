@@ -22,29 +22,29 @@ void GetLogiAndPass()
         if (i == 1)
         {
             system("cls");
-            string choiceLogin = getValueStr("Введите логин");
+            string choiceLogin = getValueStr("    Введите логин");
             string interimLogin = choiceLogin + ".txt";
             ifstream fin(interimLogin, ios_base::in);
             if (!fin.is_open()) // если файл не открыт
             {
-                cout << "Пользователь с таким логином не найден!\n";
+                cout << "    Пользователь с таким логином не найден!\n";
                 int continueAnsw;
                 bool okContin = false;
                 while (okContin == false)
                 {
-                    continueAnsw = getValueInt("Продолжаем?\n1 - Да\n2 - нет\n");
+                    continueAnsw = getValueInt("    Продолжаем?\n1 - Да\n2 - нет\n");
                     if (continueAnsw == 1 || continueAnsw == 2)
                     {
                         okContin = true;
                     }
                     else
                     {
-                        cout << "Введите одно из указанных чисел.\n" << endl;
+                        cout << "    Введите одно из указанных чисел.\n" << endl;
                     }
                 }
                 if (continueAnsw == 2)
                 {
-                    cout << "Операция прервана\n" << endl;
+                    cout << "    Операция прервана\n" << endl;
                     system("pause");
                     exit(0);
                 }
@@ -67,14 +67,14 @@ void GetLogiAndPass()
         if (i == 2)
         {
             system("cls");
-            string choicePass = getValueStr("Введите пароль");
+            string choicePass = getValueStr("    Введите пароль");
             if (choicePass == filePass)
             {
                 ok = true;
             }
             else
             {
-                cout << "Ошибка пароля. Повторите ввод.\n"; // сообщить об этом
+                cout << "    Ошибка пароля. Повторите ввод.\n"; // сообщить об этом
             }
         }
     }
@@ -111,17 +111,10 @@ string getValueStr(string mess)
 {
     while (true) // цикл продолжается до тех пор, пока пользователь не введет корректное значение
     {
-        cout << mess + "\n";
-        string a;
-        std::cin >> a;
-
-        if (std::cin.fail()) // если предыдущее извлечение оказалось неудачным,
-        {
-            std::cin.clear(); // то возвращаем cin в 'обычный' режим работы
-            std::cin.ignore(32767, '\n'); // и удаляем значения предыдущего ввода из входного буфера
-        }
-        else // если всё хорошо, то возвращаем a
-            return a;
+        cout << mess << endl;
+        std::string userStr;
+        std::getline(std::cin >> std::ws, userStr);
+        return userStr;
     }
 }
 
@@ -143,17 +136,21 @@ string WorkProfileFD(Profile user, bool rePass, bool del)
         char_arr = &user.name[0];
         if (remove(char_arr) != 0)
         {
-            out = "Ошибка удаления. Попробуйте вручную.\n";
+            out = "    Ошибка удаления. Попробуйте вручную.\n";
         }
         else
         {
+            if (user.level == 1)
+            {
+                out = "    Удален администратор " + user.name + "\n";
+            }
             if (user.level == 2)
             {
-                out = "Удален менеджер " + user.name + "\n";
+                out = "    Удален менеджер " + user.name + "\n";
             }
             if (user.level == 3)
             {
-                out = "Удален пользователь " + user.name + "\n";
+                out = "    Удален пользователь " + user.name + "\n";
             }
         }
         return out;
@@ -177,22 +174,30 @@ string WorkProfileFD(Profile user, bool rePass, bool del)
         {
             if (user.level == 2)
             {
-                out = "Изменен пароль менеджера " + user.name + "\n";
+                out = "    Изменен пароль администратора " + user.name + "\n";
+            }
+            if (user.level == 2)
+            {
+                out = "    Изменен пароль менеджера " + user.name + "\n";
             }
             if (user.level == 3)
             {
-                out = "Изменен пароль пользователя " + user.name + "\n";
+                out = "    Изменен пароль пользователя " + user.name + "\n";
             }
         }
         else
         {
             if (user.level == 2)
             {
-                out = "Создан менеджер " + user.name + "\n";
+                out = "    Создан администратор " + user.name + "\n";
+            }
+            if (user.level == 2)
+            {
+                out = "    Создан менеджер " + user.name + "\n";
             }
             if (user.level == 3)
             {
-                out = "Создан пользователь " + user.name + "\n";
+                out = "    Создан пользователь " + user.name + "\n";
             }
         }
         return out;
@@ -208,12 +213,12 @@ Profile setNewPass()
     while (ok == false)
     {
         cout << "\033[2J\033[1;1H";
-        string choiceLogin = getValueStr("Введите логин изменяемого объекта");
+        string choiceLogin = getValueStr("    Введите логин изменяемого объекта");
         string interimLogin = choiceLogin + ".txt";
         ifstream fin(interimLogin, ios_base::in);
         if (!fin.is_open()) // если файл не открыт
         {
-            cout << "Пользователь с таким логином не найден!\n";
+            cout << "    Пользователь с таким логином не найден!\n";
         }
         else
         {
@@ -230,7 +235,7 @@ Profile setNewPass()
             ok = true;
         }
     }
-    fileUser.pass = getValueStr("Введите пароль");
+    fileUser.pass = getValueStr("    Введите пароль");
     return fileUser;
 }
 
@@ -239,8 +244,8 @@ Profile GetNewProfileData()
 {
     bool ok = false;
     Profile fileUser = Profile("", "", 0);
-    fileUser.name = getValueStr("Введите имя объекта");
-    fileUser.pass = getValueStr("Введите пароль");
-    fileUser.level = getValueInt("Введите уровень доступа:\n1 - Администратор\n2 - Менеджер\n3 - Пользователь\nВаш выбор: ");
+    fileUser.name = getValueStr("    Введите имя объекта");
+    fileUser.pass = getValueStr("    Введите пароль");
+    fileUser.level = getValueInt("    Введите уровень доступа:\n1 - Администратор\n2 - Менеджер\n3 - Пользователь\nВаш выбор: ");
     return fileUser;
 }
