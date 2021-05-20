@@ -9,6 +9,7 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
+#include <ctype.h>
 #include "tabulate/table.hpp"
 using namespace tabulate;
 
@@ -231,6 +232,107 @@ void printTableAbbr()
     }
 }
 
+// функция поиска в строке
+bool search(string query, string fundStr) {
+    string queryDest;
+    queryDest.resize(query.size());
+    string fundStrDest;
+    fundStrDest.resize(fundStr.size());
+    transform(query.begin(), query.end(), queryDest.begin(), ::tolower);
+    transform(fundStr.begin(), fundStr.end(), fundStrDest.begin(), ::tolower);
+    size_t pos = fundStrDest.find(queryDest);
+    if (pos != string::npos)
+        return true;
+    else
+        return false;
+}
+
+// поиск работника и принт таблицы
+void searchAndPrintTable(int change)
+{
+    if (allWolker.size() > 0)
+    {
+        bool ok = false;
+        string query;
+        vector<worker> searchWorkers;
+        int continueAnsw;
+        switch (change)
+        {
+        case 1:
+            query = getValueStr("    Введите фамилию работника");
+            break;
+        case 2:
+            query = getValueStr("    Введите имя работника");
+            break;
+        case 3:
+            query = getValueStr("    Введите отчетсво работника");
+            break;
+        case 4:
+            query = getValueStr("    Введите отдел");
+            break;
+        }
+        for (size_t i = 0; i < allWolker.size(); i++)
+        {
+            if (change == 1 && search(query, allWolker[i].lastName))
+            {
+                searchWorkers.push_back(allWolker[i]);
+            }
+            if (change == 2 && search(query, allWolker[i].firstName))
+            {
+                searchWorkers.push_back(allWolker[i]);
+            }
+            if (change == 3 && search(query, allWolker[i].patronymic))
+            {
+                searchWorkers.push_back(allWolker[i]);
+            }
+            if (change == 4 && search(query, allWolker[i].workerPosition.department))
+            {
+                searchWorkers.push_back(allWolker[i]);
+            }
+        }
+        if (searchWorkers.size() > 0)
+        {
+            Table workers;
+            workers.add_row(Row_t{ "Фамилия", "Имя", "Отчество", "Дата рождения", "Сем. положение \n" "Дом. телефон",
+                                    "Образование:\n- оконченное УО;\n- специализация\n- год окончания", "Дата приёма",
+                                    "Сведения о найме:\n- отдел,\n- должность,\n- рабочий телефон", "Дата увольнения" });
+            for (size_t i = 0; i < searchWorkers.size(); i++)
+            {
+                workers.add_row(Row_t{ searchWorkers[i].lastName, searchWorkers[i].firstName, searchWorkers[i].patronymic, searchWorkers[i].birtday,
+                                        searchWorkers[i].martStatus + "\n" + searchWorkers[i].homeTelNumber, searchWorkers[i].educationWorker.nameEdComp + "\n" + searchWorkers[i].educationWorker.spacialization + "\n" +
+                                        to_string(searchWorkers[i].educationWorker.yearEndEducation) , searchWorkers[i].workerPosition.dateStartWork, searchWorkers[i].workerPosition.department + "\n" +
+                                        searchWorkers[i].workerPosition.position + "\n" + searchWorkers[i].workerPosition.workTelNumber, searchWorkers[i].workerPosition.dateStopWork });
+            }
+            workers.add_row(Row_t{ "Найдено сотрудников: ", to_string(searchWorkers.size()), "", "", "", "", "", "", "" });
+            workers.column(0).format().font_align(FontAlign::center);
+            workers.column(1).format().font_align(FontAlign::center);
+            workers.column(2).format().font_align(FontAlign::center);
+            workers.column(3).format().font_align(FontAlign::center);
+            workers.column(6).format().font_align(FontAlign::center);
+            workers.column(8).format().font_align(FontAlign::center);
+            int a = searchWorkers.size() + 1;
+            for (size_t i = 0; i < 9; ++i) {
+                workers[0][i].format().font_color(Color::yellow).font_style({ FontStyle::bold });
+                workers[a][i].format().font_color(Color::green).font_style({ FontStyle::bold });
+            }
+            std::cout << workers << "\n\n";
+            searchWorkers.clear();
+        }
+        else
+        {
+            cout << "                                                   " << endl;
+            cout << "              Записей не обнаружено.               " << endl;
+            cout << "                                                   " << endl;
+        }        
+    }
+    else
+    {
+        cout << "                                                   " << endl;
+        cout << "              Записей не обнаружено.               " << endl;
+        cout << "                                                   " << endl;
+    }
+}
+
 // получение данных работников в память
 void getAllWorkerFD()
 {
@@ -255,7 +357,7 @@ void getAllWorkerFD()
         {
             vector<string> workerVect = split(u, '#');
             worker interimWorker;
-            for (int i = 0; i < workerVect.size(); i++)
+            for (size_t i = 0; i < workerVect.size(); i++)
             {
                 switch (i)
                 {
@@ -381,7 +483,6 @@ bool deleteWirkerInMemory()
         return false;
     }
 }
-
 
 // сбор сведений по работнику
 worker aggregationWorkerData() {

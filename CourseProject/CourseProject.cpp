@@ -14,7 +14,7 @@ bool fileCreate;
 bool fileAdminCreate;
 /*
 ============================================
-            функции второго уровня
+            функции работы меню
 ============================================
 */
 
@@ -411,9 +411,40 @@ void GetChoiceWorkAtRecords()
         }
         break;
     case 6:
-        GetChoiceMenuAdmin();
+        system("cls");
+        cout << "                             ===================================================" << endl;
+        cout << "                                                Поиск записей                   " << endl;
+        cout << "                                              и вывод в таблицу                 " << endl;
+        cout << "                             ===================================================" << endl;
+        while (ok == false)
+        {
+            continueAnsw = getValueInt("\nВарианты поиска?\n1 - по фамилии\n2 - по имени\n3 - по отчетсву\n4 - по отделу\n5 - Назад\n6 - Выход\n");
+            if (continueAnsw == 1 || continueAnsw == 2 || continueAnsw == 3 || continueAnsw == 4 || continueAnsw == 5)
+            {
+                ok = true;
+            }
+            else
+            {
+                cout << "Введите одно из указанных чисел.\n";
+            }
+        }
+        if (continueAnsw == 5)
+        {
+            GetChoiceMenuAdmin();
+        }
+        if (continueAnsw == 6)
+        {
+            cout << "    Выход!";
+            exit(0);
+        }
+        searchAndPrintTable(continueAnsw);
+        system("pause");
+        GetChoiceWorkAtRecords();
         break;
     case 7:
+        GetChoiceMenuAdmin();
+        break;
+    case 8:
         cout << "    Выход!";
         exit(0);
     default:
@@ -798,6 +829,37 @@ void GetChoiceMenuManager()
         }
         break;
     case 6:
+        system("cls");
+        cout << "                             ===================================================" << endl;
+        cout << "                                                Поиск записей                   " << endl;
+        cout << "                                              и вывод в таблицу                 " << endl;
+        cout << "                             ===================================================" << endl;
+        while (ok == false)
+        {
+            continueAnsw = getValueInt("\nВарианты поиска?\n1 - по фамилии\n2 - по имени\n3 - по отчетсву\n4 - по отделу\n5 - Назад\n6 - Выход\n");
+            if (continueAnsw == 1 || continueAnsw == 2 || continueAnsw == 3 || continueAnsw == 4 || continueAnsw == 5)
+            {
+                ok = true;
+            }
+            else
+            {
+                cout << "Введите одно из указанных чисел.\n";
+            }
+        }
+        if (continueAnsw == 5)
+        {
+            GetChoiceMenuManager();
+        }
+        if (continueAnsw == 6)
+        {
+            cout << "    Выход!";
+            exit(0);
+        }
+        searchAndPrintTable(continueAnsw);
+        system("pause");
+        GetChoiceMenuManager();
+        break;
+    case 7:
         cout << "    Выход!";
         exit(0);
     default:
@@ -931,6 +993,37 @@ void GetChoiceMenuUser()
         }
         break;
     case 3:
+        system("cls");
+        cout << "                             ===================================================" << endl;
+        cout << "                                                Поиск записей                   " << endl;
+        cout << "                                              и вывод в таблицу                 " << endl;
+        cout << "                             ===================================================" << endl;
+        while (ok == false)
+        {
+            continueAnsw = getValueInt("\nВарианты поиска?\n1 - по фамилии\n2 - по имени\n3 - по отчетсву\n4 - по отделу\n5 - Назад\n6 - Выход\n");
+            if (continueAnsw == 1 || continueAnsw == 2 || continueAnsw == 3 || continueAnsw == 4 || continueAnsw == 5)
+            {
+                ok = true;
+            }
+            else
+            {
+                cout << "Введите одно из указанных чисел.\n";
+            }
+        }
+        if (continueAnsw == 5)
+        {
+            GetChoiceMenuUser();
+        }
+        if (continueAnsw == 6)
+        {
+            cout << "    Выход!";
+            exit(0);
+        }
+        searchAndPrintTable(continueAnsw);
+        system("pause");
+        GetChoiceMenuUser();
+        break;
+    case 4:
         cout << "    Выход!";
         exit(0);
     default:
@@ -939,7 +1032,6 @@ void GetChoiceMenuUser()
     }
 
 }
-
 
 int main(int argc, char* argv[])
 {

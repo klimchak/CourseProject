@@ -205,7 +205,7 @@ string WorkProfileFD(Profile user, bool rePass, bool del)
 
 }
 
-// смена пароля имеющемуся пользователю                                                 добавить возможность возврата при отсутствующем профиле
+// смена пароля имеющемуся пользователю
 Profile setNewPass()
 {
     bool ok = false;

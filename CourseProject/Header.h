@@ -8,7 +8,6 @@
 #include <cstdlib>
 #include "Profile.h"
 
-
 struct Education;
 struct workAt;
 struct worker;
@@ -61,6 +60,10 @@ bool creatRecordInFD(bool atMemory);
 void printTable();
 // принт таблицы файла данных сокращенно
 void printTableAbbr();
+// поиск работника и принт таблицы
+void searchAndPrintTable(int change);
+// функци€ поиска в строке
+bool search(string query, string fundStr);
 // получение данных работников в пам€ть
 void getAllWorkerFD();
 // удаление данных работника в пам€ти и перезапись в файл
