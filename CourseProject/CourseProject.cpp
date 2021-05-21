@@ -3,7 +3,6 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
-#include "Profile.h"
 #include "Header.h"
 
 using namespace std;
@@ -12,6 +11,7 @@ using std::string;
 bool choiceCreateFD = false;
 bool fileCreate;
 bool fileAdminCreate;
+
 /*
 ============================================
             функции работы меню
@@ -464,10 +464,10 @@ void GetChoiceWorkAtProfile()
     }
     DisplayWorkAtProfile();
     int choice = getValueInt("    Введите числовое значение:");
-    Profile newUser = Profile("", "", 0);
-    Profile interimProfile = Profile("", "", 0);
+    Profile newUser;
+    Profile interimProfile;
     string out;
-    string oldUserName;
+    char oldUserName[127];
     int continueAnsw;
     bool ok = false;
     ifstream fin;
@@ -479,13 +479,13 @@ void GetChoiceWorkAtProfile()
         cout << "                                        Добавление новой учетной записи         " << endl;
         cout << "                             ===================================================" << endl;
         newUser = GetNewProfileData();
-        if (newUser.level > 3)
+       /* if (newUser.level > 3)
         {
             cout << "    Указан неверный уровень учетной записи.\n" << endl;
             system("pause");
             GetChoiceWorkAtProfile();
-        }
-        fin.open(newUser.name + ".txt", ios_base::in);
+        }*/
+        fin.open(newUser.login, ios_base::in | std::ios::binary);
         if (!fin.is_open()) // если файл не открыт
         {
             while (ok == false)
@@ -530,8 +530,10 @@ void GetChoiceWorkAtProfile()
         cout << "                             ===================================================" << endl;
         cout << "                                        Редактирование учетной записи           " << endl;
         cout << "                             ===================================================" << endl;
-        newUser.name = getValueStr("    Введите имя учетной записи, которую желаете изменить");
-        fin.open(newUser.name + ".txt", ios_base::in);
+        cout << "\n";
+        cout << "    Введите имя учетной записи, которую желаете изменить:\n";
+        cin >> newUser.login;
+        fin.open(newUser.login, ios_base::in);
         if (!fin.is_open()) // если файл не открыт
         {
             cout << "    Пользователь с таким логином не найден.\n";
@@ -562,7 +564,7 @@ void GetChoiceWorkAtProfile()
                 interimProfile = GetNewProfileData();
                 out = WorkProfileFD(interimProfile, true, false);
                 cout << "    Учетная запись изменена\n";
-                if (newUser.name != interimProfile.name)
+                if (strcmp(newUser.login, interimProfile.login) != 0)
                 {
                     WorkProfileFD(newUser, false, true);
                 }
@@ -586,9 +588,9 @@ void GetChoiceWorkAtProfile()
         while (ok == false)
         {
             system("pause");
-            oldUserName = getValueStr("    Введите логин удаляемого объекта");
-            string interimFN = oldUserName + ".txt";
-            ifstream finn(interimFN, ios_base::in);
+            cout << "    Введите логин удаляемого объекта\n" << endl;
+            cin >> newUser.login;
+            ifstream finn(oldUserName, ios_base::in);
             if (!finn.is_open()) // если файл не открыт
             {
                 cout << "    Пользователь с таким логином не найден!\n";
@@ -614,7 +616,6 @@ void GetChoiceWorkAtProfile()
         }
         if (continueAnsw == 1)
         {
-            newUser.name = oldUserName;
             out = WorkProfileFD(newUser, false, true);
             cout << out;
             system("pause");
@@ -1035,11 +1036,12 @@ void GetChoiceMenuUser()
 
 int main(int argc, char* argv[])
 {
+    /*
     // развернуть консоль
     keybd_event(VK_MENU, 0x38, 0, 0);
     keybd_event(VK_RETURN, 0x1c, 0, 0);
     keybd_event(VK_RETURN, 0x1c, KEYEVENTF_KEYUP, 0);
-    keybd_event(VK_MENU, 0x38, KEYEVENTF_KEYUP, 0);
+    keybd_event(VK_MENU, 0x38, KEYEVENTF_KEYUP, 0);*/
     // установка локали
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
@@ -1050,8 +1052,8 @@ int main(int argc, char* argv[])
     {
         int continueAnsw;
         bool ok = false;
-        Profile admin = Profile("", "", 0);
         string out;
+        
         while (ok == false)
         {
             system("cls");
@@ -1061,14 +1063,14 @@ int main(int argc, char* argv[])
             continueAnsw = getValueInt("    Создать админа?\n1 - Да\n2 - нет\n");
             if (continueAnsw == 1 || continueAnsw == 2)
             {
+                Profile searchProfile{"admin", "pass", 1};
+
                 switch (continueAnsw)
                 {
                 case 1:
-                    admin.name = "admin";
-                    admin.pass = "pass";
-                    admin.level = 1;
-                    out = WorkProfileFD(admin, false, false);
-                    cout << out;
+                    searchProfile = GetNewProfileData();
+                    out = WorkProfileFD(searchProfile, false, false);
+                    cout << "\n    логин для входа: admin";
                     cout << "\n    пароль для входа: pass\n";
                     system("pause");
                     ok = true;

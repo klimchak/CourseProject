@@ -25,13 +25,14 @@ using Row_t = std::vector<variant<std::string, const char*, Table>>;
 using namespace std;
 using std::string;
 
+// данные о образовании
 struct Education
 {
     string nameEdComp;
     string spacialization;
     int yearEndEducation;
 };
-
+// данные о занимаемой должности
 struct workAt
 {
     string dateStartWork;
@@ -41,6 +42,7 @@ struct workAt
     string dateStopWork;
 };
 
+// общие сведения о работнике
 struct worker
 {
     string firstName;
@@ -55,31 +57,78 @@ struct worker
 
 vector<worker> allWolker;
 bool availabilityWorker;
-
+int varSort = 1;
 // =====================================================
 //         сортировка
 // =====================================================
 // компараторы
 bool comparareLastName(const worker lhs, const worker rhs) {
-    return lhs.lastName > rhs.lastName;
+    if (varSort == 1)
+    {
+        return lhs.lastName > rhs.lastName;
+    }
+    else
+    {
+        return lhs.lastName < rhs.lastName;
+    }
+    
 }
 bool comparareFirstName(const worker lhs, const worker rhs) {
-    return lhs.firstName > rhs.firstName;
+    if (varSort == 1)
+    {
+        return lhs.firstName > rhs.firstName;
+    }
+    else
+    {
+        return lhs.firstName < rhs.firstName;
+    }
 }
 bool comparareDepartment(const worker lhs, const worker rhs) {
-    return lhs.workerPosition.department > rhs.workerPosition.department;
+    if (varSort == 1)
+    {
+        return lhs.workerPosition.department > rhs.workerPosition.department;
+    }
+    else
+    {
+        return lhs.workerPosition.department < rhs.workerPosition.department;
+    }
+    
 }
 // сортировка по фамилии
 void sortLN() {
     sort(allWolker.begin(), allWolker.end(), comparareLastName);
+    if (varSort == 1)
+    { 
+        varSort = 2; 
+    }
+    else
+    { 
+        varSort = 1; 
+    }
 }
 // сортировка по имени
 void sortFN() {
     sort(allWolker.begin(), allWolker.end(), comparareFirstName);
+    if (varSort == 1) 
+    { 
+        varSort = 2;
+    }
+    else 
+    { 
+        varSort = 1;
+    }
 }
 // сортировка по отделу
 void sortDep() {
     sort(allWolker.begin(), allWolker.end(), comparareDepartment);
+    if (varSort == 1) 
+    { 
+        varSort = 2; 
+    }
+    else 
+    { 
+        varSort = 1; 
+    }
 }
 
 // делитель строки
@@ -559,7 +608,7 @@ bool CreateOrDeleteFD(bool createOrDelete)
 // проеверка файла админа
 bool CreateOrDeleteAdminFile()
 {
-    ifstream fin("admin.txt", ios_base::in);
+    ifstream fin("admin", ios_base::in);
     if (!fin.is_open())
     {
         return false;

@@ -6,12 +6,14 @@
 #include <iostream> 
 #include <fstream>
 #include <cstdlib>
-#include "Profile.h"
 
 struct Education;
 struct workAt;
 struct worker;
+struct Profile;
+
 extern bool availabilityWorker;
+extern int varSort;
 /*
 ============================================
             объявление функций
