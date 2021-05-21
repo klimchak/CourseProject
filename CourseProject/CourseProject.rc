@@ -61,8 +61,8 @@ IDI_ICON1               ICON                    "C:\\Users\\klim\\Downloads\\xte
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,2
- PRODUCTVERSION 1,0,0,2
+ FILEVERSION 1,0,0,3
+ PRODUCTVERSION 1,0,0,3
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -79,12 +79,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Климчик Илья"
             VALUE "FileDescription", "Курсовой проект 2021"
-            VALUE "FileVersion", "1.0.0.2"
+            VALUE "FileVersion", "1.0.0.3"
             VALUE "InternalName", "CoursePr.exe"
             VALUE "LegalCopyright", "Илья Климчик. Copyright (C) 2021. https://github.com/klimchak"
             VALUE "OriginalFilename", "CoursePr.exe"
             VALUE "ProductName", "Course project 2021"
-            VALUE "ProductVersion", "1.0.0.2"
+            VALUE "ProductVersion", "1.0.0.3"
         END
     END
     BLOCK "VarFileInfo"
