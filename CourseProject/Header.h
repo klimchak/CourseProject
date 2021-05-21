@@ -6,11 +6,19 @@
 #include <iostream> 
 #include <fstream>
 #include <cstdlib>
+#include <ostream>
+
+using namespace std;
 
 struct Education;
 struct workAt;
 struct worker;
-struct Profile;
+extern struct Profile
+{
+    char login[255];
+    char password[255];
+    int level;
+};
 
 extern bool availabilityWorker;
 extern int varSort;

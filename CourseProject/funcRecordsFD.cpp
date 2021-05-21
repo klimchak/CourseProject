@@ -3,7 +3,6 @@
 #include <iostream> 
 #include <fstream>
 #include <cstdlib>
-#include "Profile.h"
 #include "Header.h"
 #include <stdio.h>
 #include <sstream>

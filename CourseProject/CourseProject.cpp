@@ -1,9 +1,10 @@
-﻿#include <Windows.h>
+﻿#include "Header.h"
+#include <Windows.h>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
-#include "Header.h"
+
 
 using namespace std;
 using std::string;
@@ -479,12 +480,6 @@ void GetChoiceWorkAtProfile()
         cout << "                                        Добавление новой учетной записи         " << endl;
         cout << "                             ===================================================" << endl;
         newUser = GetNewProfileData();
-       /* if (newUser.level > 3)
-        {
-            cout << "    Указан неверный уровень учетной записи.\n" << endl;
-            system("pause");
-            GetChoiceWorkAtProfile();
-        }*/
         fin.open(newUser.login, ios_base::in | std::ios::binary);
         if (!fin.is_open()) // если файл не открыт
         {
@@ -534,7 +529,7 @@ void GetChoiceWorkAtProfile()
         cout << "    Введите имя учетной записи, которую желаете изменить:\n";
         cin >> newUser.login;
         fin.open(newUser.login, ios_base::in);
-        if (!fin.is_open()) // если файл не открыт
+        if (!fin.is_open())
         {
             cout << "    Пользователь с таким логином не найден.\n";
             system("pause");
@@ -587,13 +582,16 @@ void GetChoiceWorkAtProfile()
         ok = false;
         while (ok == false)
         {
-            system("pause");
+            
             cout << "    Введите логин удаляемого объекта\n" << endl;
             cin >> newUser.login;
-            ifstream finn(oldUserName, ios_base::in);
-            if (!finn.is_open()) // если файл не открыт
+            ifstream finn(newUser.login, ios_base::in);
+            if (!finn.is_open())
             {
                 cout << "    Пользователь с таким логином не найден!\n";
+                system("pause");
+                GetChoiceWorkAtProfile();
+                break;
             }
             else
             {
@@ -1068,7 +1066,6 @@ int main(int argc, char* argv[])
                 switch (continueAnsw)
                 {
                 case 1:
-                    searchProfile = GetNewProfileData();
                     out = WorkProfileFD(searchProfile, false, false);
                     cout << "\n    логин для входа: admin";
                     cout << "\n    пароль для входа: pass\n";
