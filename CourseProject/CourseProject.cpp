@@ -1034,12 +1034,11 @@ void GetChoiceMenuUser()
 
 int main(int argc, char* argv[])
 {
-    /*
     // развернуть консоль
     keybd_event(VK_MENU, 0x38, 0, 0);
     keybd_event(VK_RETURN, 0x1c, 0, 0);
     keybd_event(VK_RETURN, 0x1c, KEYEVENTF_KEYUP, 0);
-    keybd_event(VK_MENU, 0x38, KEYEVENTF_KEYUP, 0);*/
+    keybd_event(VK_MENU, 0x38, KEYEVENTF_KEYUP, 0);
     // установка локали
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
@@ -1062,7 +1061,6 @@ int main(int argc, char* argv[])
             if (continueAnsw == 1 || continueAnsw == 2)
             {
                 Profile searchProfile{"admin", "pass", 1};
-
                 switch (continueAnsw)
                 {
                 case 1:
@@ -1077,6 +1075,7 @@ int main(int argc, char* argv[])
                     exit(0);
                 default:
                     cout << "    Выход!\n";
+                    system("pause");
                     exit(0);
                 }
             }
