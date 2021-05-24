@@ -25,7 +25,7 @@ void GetLogiAndPass()
             char choiceLogin[127];
             cout << "    Введите логин:\n";
             cin >> choiceLogin;
-            std::ifstream openFile(choiceLogin, std::ios::in | std::ios::binary | std::ios::app);
+            std::ifstream openFile(choiceLogin, std::ios::in | std::ios::binary );
             if (!openFile.is_open()) // если файл не открыт
             {
                 cout << "    Пользователь с таким логином не найден!\n";
@@ -70,7 +70,26 @@ void GetLogiAndPass()
             else
             {
                 cout << "    Ошибка пароля. Повторите ввод.\n"; // сообщить об этом
-                system("pause");
+                int continueAnsw;
+                bool okContin = false;
+                while (okContin == false)
+                {
+                    continueAnsw = getValueInt("    Продолжаем?\n1 - Да\n2 - нет\n");
+                    if (continueAnsw == 1 || continueAnsw == 2)
+                    {
+                        okContin = true;
+                    }
+                    else
+                    {
+                        cout << "    Введите одно из указанных чисел.\n" << endl;
+                    }
+                }
+                if (continueAnsw == 2)
+                {
+                    cout << "    Операция прервана\n" << endl;
+                    system("pause");
+                    exit(0);
+                }
             }
         }
     }
