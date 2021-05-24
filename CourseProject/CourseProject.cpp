@@ -5,7 +5,6 @@
 #include <fstream>
 #include <cstdlib>
 
-
 using namespace std;
 using std::string;
 
@@ -193,19 +192,27 @@ void GetChoiceWorkAtFileData()
         cout << "                             ===================================================" << endl;
         cout << "                                        Создать файл данных сотрудника          " << endl;
         cout << "                             ===================================================" << endl;
+        if (fileCreate)
+        {
+            cout << "                             ===================================================" << endl;
+            cout << "                                             Файл данных существует             " << endl;
+            cout << "                             ===================================================" << endl;
+            system("pause");
+            GetChoiceWorkAtFileData();
+        }
         if (CreateOrDeleteFD(true))
         {
             cout << "    Файл данных успешно создан" << endl;
             fileCreate = true;
             system("pause");
-            GetChoiceMenuAdmin();
+            GetChoiceWorkAtFileData();
         }
         else
         {
             cout << "    Ошибка при создании. Повторите попытку позже." << endl;
             fileCreate = false;
             system("pause");
-            GetChoiceMenuAdmin();
+            GetChoiceWorkAtFileData();
         }
         break;
     case 2:
@@ -219,14 +226,14 @@ void GetChoiceWorkAtFileData()
             choiceCreateFD = true;
             fileCreate = false;
             system("pause");
-            GetChoiceMenuAdmin();
+            GetChoiceWorkAtFileData();
         }
         else
         {
             cout << "    Ошибка при удалении. Повторите попытку позже." << endl;
             fileCreate = true;
             system("pause");
-            GetChoiceMenuAdmin();
+            GetChoiceWorkAtFileData();
         }
         break;
     case 3:
